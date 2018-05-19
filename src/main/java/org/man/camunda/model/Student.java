@@ -1,4 +1,4 @@
-package org.man.camunda.Model;
+package org.man.camunda.model;
 
 public class Student {
     public String studentId;
