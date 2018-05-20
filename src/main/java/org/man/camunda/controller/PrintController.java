@@ -5,7 +5,7 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.variable.Variables;
 import org.man.camunda.model.Student;
-import org.man.camunda.constants.ProcessConstants;
+import org.man.camunda.config.ProcessConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,12 +27,12 @@ public class PrintController {
     }
 
     public ProcessInstance printGrade(Student student) {
-        log.info("Start print grade process from student:{}", student);
+        log.info("Start print grade sender process from student:{}", student);
         return camunda.getRuntimeService().startProcessInstanceByKey(//
-                ProcessConstants.PROCESS_KEY_print, //
+                ProcessConstants.PROCESS_KEY_GRADE_SENDER, //
                 Variables //
-                        .putValue(ProcessConstants.VAR_NAME_studentId, student.studentId) //
-                        .putValue(ProcessConstants.VAR_NAME_grade, student.grade));
+                        .putValue(ProcessConstants.VAR_NAME_STUDENT_ID, student.studentId) //
+                        .putValue(ProcessConstants.VAR_NAME_GRADE, student.grade));
     }
 
 }

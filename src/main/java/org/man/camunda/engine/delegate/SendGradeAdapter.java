@@ -1,40 +1,34 @@
 package org.man.camunda.engine.delegate;
 
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.man.camunda.config.ProcessConstants;
+import org.man.camunda.model.Student;
+import org.man.camunda.service.StreamService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 
 @Component
 @ConfigurationProperties
-public class CalculateGradeAdapter implements JavaDelegate {
+@Slf4j
+public class SendGradeAdapter implements JavaDelegate {
 
-    public int i = 0;
+    @Autowired
+    StreamService streamService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        System.out.println(i++);
+
         String studentId = (String) delegateExecution.getVariable(ProcessConstants.VAR_NAME_STUDENT_ID);
         String grade = (String) delegateExecution.getVariable(ProcessConstants.VAR_NAME_GRADE);
+        int gradeNumber = (int) delegateExecution.getVariable(ProcessConstants.VAR_NAME_GRADE_NUMBER);
 
-        System.out.println("CalculateGradeAdapter: studentId:{"+studentId+"}, grade:{"+grade+"}");
-        int gradeNumber = 0;
+        Student studentInfo = new Student().setStudentId(studentId).setGrade(grade).setGradeNumber(gradeNumber);
 
-        switch (grade){
-            case "A":
-                gradeNumber = 4;
-                break;
-            case "B":
-                gradeNumber = 3;
-                break;
-            default:
-                gradeNumber = 0;
-                break;
-        }
+        streamService.send(studentInfo);
 
-        delegateExecution.setVariable(ProcessConstants.VAR_NAME_GRADE_NUMBER, gradeNumber);
     }
-
 }
